@@ -15,11 +15,11 @@
 
 from oslo_log import log as logging
 
+from tempest.common.utils import data_utils
 from tempest.common.utils.linux import remote_client
 from tempest import config
 from tempest import exceptions
 from tempest import test
-from tempest_lib.common.utils import data_utils
 
 from tempest_ec2.tests.thirdparty.boto import test as boto_test
 from tempest_ec2.tests.thirdparty.boto.utils import s3
@@ -176,23 +176,23 @@ class InstanceRunTest(boto_test.BotoTestCase):
             instance.add_tag('key1', value='value1')
 
         tags = self.ec2_client.get_all_tags()
-        td = {item.name: item.value for item in tags}
+        td = dict((item.name, item.value) for item in tags)
 
         self.assertIn('key1', td)
         self.assertEqual('value1', td['key1'])
 
         tags = self.ec2_client.get_all_tags(filters={'key': 'key1'})
-        td = {item.name: item.value for item in tags}
+        td = dict((item.name, item.value) for item in tags)
         self.assertIn('key1', td)
         self.assertEqual('value1', td['key1'])
 
         tags = self.ec2_client.get_all_tags(filters={'value': 'value1'})
-        td = {item.name: item.value for item in tags}
+        td = dict((item.name, item.value) for item in tags)
         self.assertIn('key1', td)
         self.assertEqual('value1', td['key1'])
 
         tags = self.ec2_client.get_all_tags(filters={'key': 'value2'})
-        td = {item.name: item.value for item in tags}
+        td = dict((item.name, item.value) for item in tags)
         self.assertNotIn('key1', td)
 
         for instance in reservation.instances:
